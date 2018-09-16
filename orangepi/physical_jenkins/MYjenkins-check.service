@@ -1,0 +1,21 @@
+[Unit]
+#After=network.target
+Description=My jenkins monitor
+
+[Service]
+#Type=oneshot
+Type=idle
+#ExecStart=/usr/bin/screen -dmS jenkins /root/jenkins.py
+ExecStart=/root/jenkins.py
+#ExecStop=/usr/bin/pkill -9 -f SCREEN
+ExecStop=/usr/bin/pkill -9 -f jenkins
+#RemainAfterExit=yes
+User=root
+Group=root
+#KillMode=none
+#StandardInput=tty
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

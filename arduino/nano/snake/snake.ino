@@ -75,17 +75,17 @@ const int lrelay = 5; //in1 L relay
 // Do this pollcount times before doing anything with the lights to prevent strobing.
 // So pd=3 and pc=10 means update temp every 3sec and mess with lights every 30
 int starter = 0;
-int pollcount = 10;
+int pollcount = 300; //15mins
 int polldelay = 3;
 int polldelayms = polldelay * 1000;
 
 //Switches.  fahrenheit and 24 hour.  
 //HL on between toocold and toohot and when less than toocold
 //L on between onhour and offhour 
-int toocold = 70;
-int toohot = 80;
-int onhour = 9;
-int offhour = 17;
+int toocold = 77;
+int toohot = 83;
+int onhour = 8;
+int offhour = 22;
 
 
 void setup()
@@ -108,14 +108,13 @@ void setup()
   digitalWrite(hlrelay, HIGH);
   digitalWrite(lrelay, HIGH);
 
-  //TODO SET TIME AND UNCOMMENT BEGIN
   //setup time
-  //rtc.begin();
+  rtc.begin();
   // The following lines can be uncommented to set the date and time
   //Uncomment. Upload.  Comment. Upload.
-  //rtc.setDOW(SUNDAY);     // Set Day-of-Week to SUNDAY
-  //rtc.setTime(16, 58, 0);     // Set the time to 12:00:00 (24hr format)
-  //rtc.setDate(5, 8, 2018);   // dom, month, year
+  //rtc.setDOW(SATURDAY);     // Set Day-of-Week to SUNDAY
+  //rtc.setTime(17, 36, 00);     // Set the time to 12:00:00 (24hr format)
+  //rtc.setDate(29, 9, 2018);   // dom, month, year
 }
 
 void loop()
@@ -135,9 +134,8 @@ void loop()
   float fB = (eventB.temperature * 1.8) + 32; //to F degress
   int fBr = round(fB); //rounded
 
-  //TODO: uncomment
   //get time
-  //t = rtc.getTime();
+  t = rtc.getTime();
 
   //get current on/off status of relays. logic is reverse.  put LOW to turn on
   int chls = digitalRead(hlrelay); //current hl status
@@ -170,10 +168,8 @@ void loop()
     }
   }
   
-  //TODO: uncomment
-  int hour = 9;
-  if ((hour >= onhour) && (hour <= offhour)){
-  //if ((t.hour >= onhour) && (t.hour <= offhour)){
+
+  if ((t.hour >= onhour) && (t.hour <= offhour)){
     ls = "L "; //lamp status
    if (cls == HIGH){ //if off, turn on.
       Serial.println("Turning on L inside of time range");
@@ -217,9 +213,8 @@ void probeandprint() {
     int hBr = round(hB); //rounded
     bsl += String(hBr); //add humidity to bottom status line
     
-    //TODO: uncomment
-    //time
-    //t = rtc.getTime();
+
+    t = rtc.getTime();
 
     //hours
     //PM
@@ -272,9 +267,7 @@ void probeandprint() {
 
     //print the results
     myGLCD.clrScr();
-    //TODO: uncomment
-    myGLCD.print("05:37:00 PM", LEFT, 0);
-    //myGLCD.print(fulltime, LEFT, 0);
+    myGLCD.print(fulltime, LEFT, 0);
     Serial.println(fulltime); //time line
     myGLCD.print(tsl, LEFT, 8); //top sensor status line
     Serial.println(tsl);

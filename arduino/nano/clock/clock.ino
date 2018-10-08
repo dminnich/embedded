@@ -24,10 +24,60 @@
 //
 
 #include <DS3231.h>
-#include <LiquidCrystal.h>
+#include <math.h> //for rounding numbers
+
+/***************************************************
+  This is a library for the Adafruit 1.8" SPI display.
+
+This library works with the Adafruit 1.8" TFT Breakout w/SD card
+  ----> http://www.adafruit.com/products/358
+The 1.8" TFT shield
+  ----> https://www.adafruit.com/product/802
+The 1.44" TFT breakout
+  ----> https://www.adafruit.com/product/2088
+as well as Adafruit raw 1.8" TFT display
+  ----> http://www.adafruit.com/products/618
+
+  Check out the links above for our tutorials and wiring diagrams
+  These displays use SPI to communicate, 4 or 5 pins are required to
+  interface (RST is optional)
+  Adafruit invests time and resources providing this open source code,
+  please support Adafruit and open-source hardware by purchasing
+  products from Adafruit!
+
+  Written by Limor Fried/Ladyada for Adafruit Industries.
+  MIT license, all text above must be included in any redistribution
+ ****************************************************/
+
+#include <Adafruit_GFX.h>    // Core graphics library
+#include <Adafruit_ST7735.h> // Hardware-specific library for ST7735
+#include <SPI.h>
+
+
+// For the breakout, you can use any 2 or 3 pins
+// These pins will also work for the 1.8" TFT shield
+#define TFT_CS     10
+#define TFT_RST    8  // you can also connect this to the Arduino reset
+                       // in which case, set this #define pin to -1!
+#define TFT_DC     9
+
+// Option 1 (recommended): must use the hardware SPI pins
+// (for UNO thats sclk = 13 and sid = 11) and pin 10 must be
+// an output. This is much faster - also required if you want
+// to use the microSD card (see the image drawing example)
+
+// For 1.44" and 1.8" TFT with ST7735 use
+Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS,  TFT_DC, TFT_RST);
+
+// Option 2: use any pins but a little slower!
+//#define TFT_SCLK 13   // set these to be whatever pins you like!
+//#define TFT_MOSI 11   // set these to be whatever pins you like!
+//Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_MOSI, TFT_SCLK, TFT_RST);
+
 
 // Init the DS3231 using the hardware interface
 DS3231  rtc(SDA, SCL);
+// create vars
 float tempf;
 float tempc;
 int myhour;
@@ -39,19 +89,19 @@ String phour;
 String pmin;
 String psec;
 Time  t;
-LiquidCrystal lcd(8,9,4,5,6,7);
 
 
 void setup()
 {
   // Setup Serial connection
   Serial.begin(115200);
-  // Uncomment the next line if you are using an Arduino Leonardo
-  //while (!Serial) {}
   
   // Initialize the rtc object
   rtc.begin();
-  lcd.begin(16,2);
+  // Use this initializer if you're using a 1.8" TFT
+  tft.initR(INITR_BLACKTAB);   // initialize a ST7735S chip, black tab
+  tft.setRotation(3);
+  tft.setTextWrap(false);
   // The following lines can be uncommented to set the date and time
   //Uncomment. Upload.  Comment. Upload.
   //rtc.setDOW(SUNDAY);     // Set Day-of-Week to SUNDAY
@@ -120,22 +170,29 @@ void loop()
   
   // Send date
   Serial.print("Time: ");
-  lcd.setCursor(0,0);
-  lcd.print("  ");
-  fulltime = String(phour) + ':' + String(pmin) + ':' + String(psec) + ' ' + suffix;
+  //fulltime = String(phour) + ':' + String(pmin) + ':' + String(psec) + ' ' + suffix;
+  fulltime = String(phour) + ':' + String(pmin) + ' ' + suffix;
   Serial.println(fulltime);
-  lcd.print(fulltime);
+  tft.fillScreen(ST77XX_BLACK);
+  tft.setTextColor(ST77XX_WHITE);
+  tft.setTextSize(3);
+  tft.setCursor(0, 0);
+  tft.print(fulltime);
   Serial.print("Date: ");
-  lcd.setCursor(0,1);
-  lcd.print("  ");
-  lcd.print(rtc.getDateStr(FORMAT_LONG,FORMAT_MIDDLEENDIAN,'/'));
   Serial.println(rtc.getDateStr(FORMAT_LONG,FORMAT_MIDDLEENDIAN,'/'));
+  tft.setTextColor(ST77XX_RED);
+  tft.setTextSize(2);
+  tft.setCursor(0, 35);
+  tft.print(rtc.getDateStr(FORMAT_LONG,FORMAT_MIDDLEENDIAN,'/'));
   Serial.print("Temp: ");
   tempc = rtc.getTemp();
-  tempf = (tempc*1.80000)+32.00;
-  Serial.println(tempf);
+  tempf = (tempc*1.8)+32;
+  int tempfr = round(tempf);
+  Serial.println(tempfr);
+  tft.setCursor(0, 70);
+  tft.print(String(tempfr) + " F");
   Serial.println ("");
   
-  // Wait one second before repeating :)
-  delay (1000);
+  // Wait 15 second before repeating :)
+  delay (15000);
 }

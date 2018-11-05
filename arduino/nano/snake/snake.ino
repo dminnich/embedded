@@ -75,17 +75,17 @@ const int lrelay = 5; //in1 L relay
 // Do this pollcount times before doing anything with the lights to prevent strobing.
 // So pd=3 and pc=10 means update temp every 3sec and mess with lights every 30
 int starter = 0;
-int pollcount = 300; //15mins
+int pollcount = 120; //6mins
 int polldelay = 3;
 int polldelayms = polldelay * 1000;
 
 //Switches.  fahrenheit and 24 hour.  
 //HL on between toocold and toohot and when less than toocold
 //L on between onhour and offhour 
-int toocold = 77;
-int toohot = 83;
+//int toocold = 77;
+int toohot = 87; //up to 86
 int onhour = 8;
-int offhour = 22;
+int offhour = 21; //actually 10pm due to less than equal being good for a whole hour
 
 
 void setup()
@@ -112,9 +112,9 @@ void setup()
   rtc.begin();
   // The following lines can be uncommented to set the date and time
   //Uncomment. Upload.  Comment. Upload.
-  //rtc.setDOW(SATURDAY);     // Set Day-of-Week to SUNDAY
-  //rtc.setTime(17, 36, 00);     // Set the time to 12:00:00 (24hr format)
-  //rtc.setDate(29, 9, 2018);   // dom, month, year
+  //rtc.setDOW(MONDAY);     // Set Day-of-Week to SUNDAY
+  //rtc.setTime(17, 46, 00);     // Set the time to 12:00:00 (24hr format)
+  //rtc.setDate(05, 11, 2018);   // dom, month, year
 }
 
 void loop()
@@ -143,22 +143,15 @@ void loop()
   
   
   
-  if ((fBr > toocold) && (fBr < toohot)){
+  if (fBr <= toohot){
     hls = "HL "; //heat lamp status
     if (chls == HIGH){ //if off, turn on.
-      Serial.println("Turning on HL middle range");
+      Serial.println("Turning on HL");
       digitalWrite(hlrelay, LOW);
       delay(5000); //don't fire both relays at once 
     }
   }
-  else if (fBr < toocold){
-    hls = "HL "; //heat lamp status
-    if (chls == HIGH){ //if off, turn on.
-      Serial.println("Turning on HL low range");
-      digitalWrite(hlrelay, LOW);
-      delay(5000); //don't fire both relays at once 
-    }
-  }
+  
   else {
     hls = " "; //heat lamp status
     if (chls == LOW){ //if on, turn off.
@@ -196,7 +189,7 @@ void probeandprint() {
     dhtT.temperature().getEvent(&eventT);
     float f = (eventT.temperature * 1.8) + 32; //degrees F
     int fr = round(f); //rounded
-    String tsl = "T: " + String(fr) + "F "; //top sensor status line
+    String tsl = "C: " + String(fr) + "F "; //top sensor status line
     dhtT.humidity().getEvent(&eventT);
     float h = eventT.relative_humidity; //humidity
     int hr = round(h); //rounded
@@ -207,7 +200,7 @@ void probeandprint() {
     dhtB.temperature().getEvent(&eventB);
     float fB = (eventB.temperature * 1.8) + 32; //degrees F
     int fBr = round(fB); //rounded
-    String bsl = "B: " + String(fBr) + "F "; //bottom sensor status line
+    String bsl = "H: " + String(fBr) + "F "; //bottom sensor status line
     dhtB.humidity().getEvent(&eventB);
     float hB = eventB.relative_humidity; //humidity
     int hBr = round(hB); //rounded
@@ -279,4 +272,3 @@ void probeandprint() {
     delay(polldelayms); //wait this long before probing again.  
     Serial.println(""); //seperator for easier debugging
 }
-

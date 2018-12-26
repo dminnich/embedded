@@ -9,7 +9,7 @@ const int echopin = D3;
 long waterdistance, duration, wd;
 //if water is more than cm from the sensor cut on the waterpump
 //These calcs arent perfect.  exepct to play with them.
-int waterdistancetrigger = 2;
+int waterdistancetrigger = 13;
 //relay strobe prevention.  we can't go from on/off to quickly. pause this many ms after state change.
 //account for this much water flow buffer before overflowing the bowl.
 int strobepausems = 500; //.5 sec
@@ -22,6 +22,7 @@ int fscounter = failsafe * strobepauses;
 //Don't do it too often or water may be added while the pet is drinking.
 int checkfreq = 300; //every 5 minutes
 //int checkfreq = 5;  //debug
+//int checkfreq = 60;
 int checkfreqms = checkfreq * 1000;
 
 void setup() {
@@ -45,6 +46,7 @@ long currentdistance(){
   // Read the signal from the sensor: a HIGH pulse whose
   // duration is the time (in microseconds) from the sending
   // of the ping to the reception of its echo off of an object.
+  delayMicroseconds(5);
   duration = pulseIn(echopin, HIGH);
   waterdistance= duration*0.034/2;
   return waterdistance;
@@ -52,7 +54,7 @@ long currentdistance(){
 
 
 void loop() {
-  delay(5000); //debug. allows serial monitor launching before things happen
+  delay(8000); //debug. allows serial monitor launching before things happen
   int i = 0;
   wd = currentdistance();
   Serial.println("Initial distance is:" + String(wd));

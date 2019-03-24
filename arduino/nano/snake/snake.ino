@@ -112,9 +112,9 @@ void setup()
   rtc.begin();
   // The following lines can be uncommented to set the date and time
   //Uncomment. Upload.  Comment. Upload.
-  //rtc.setDOW(FRIDAY);     // Set Day-of-Week to SUNDAY
-  //rtc.setTime(22, 9, 00);     // Set the time to 12:00:00 (24hr format)
-  //rtc.setDate(9, 11, 2018);   // dom, month, year
+  //rtc.setDOW(SUNDAY);     // Set Day-of-Week to SUNDAY
+  //rtc.setTime(14, 43, 00);     // Set the time to 12:00:00 (24hr format)
+  //rtc.setDate(24, 03, 2019);   // dom, month, year
 }
 
 void loop()

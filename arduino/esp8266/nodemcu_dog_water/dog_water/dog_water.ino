@@ -2,7 +2,7 @@
 //test cases
 //if bowl is full - do nothing. just keep looping and checking.
 //if bowl is nearly empty - add water up to trigger, cut off pump, normal loops to follow
-//if bowl is nearly empty  and water pump runs to long - failsafe
+//if bowl is nearly empty  and water pump runs too long - failsafe
 const int relay = D2;
 const int trigpin = D4;
 const int echopin = D3;
@@ -24,6 +24,14 @@ int checkfreq = 300; //every 5 minutes
 //int checkfreq = 5;  //debug
 //int checkfreq = 60;
 int checkfreqms = checkfreq * 1000;
+//a single check of needs water is occasionally followed by the next check of no-need for water as the measurements aren't exact and
+//by nature we stay right on that line. this causes strobing of the relay.  To prevent we will read the measurement several times quickly.
+//how many samples per measure
+const int MEASURE_SAMPLES = 25;
+const int MEASURE_SAMPLE_DELAY = 5;
+//^125 ms worth of measurements + .5 ms from microsec pauses across the total of all individual mesaurements
+
+
 
 void setup() {
   pinMode(relay, OUTPUT);
@@ -41,22 +49,36 @@ long currentdistance(){
   digitalWrite(trigpin, LOW);
   delayMicroseconds(5);
   digitalWrite(trigpin, HIGH);
-  delayMicroseconds(10);
+  delayMicroseconds(11);
   digitalWrite(trigpin, LOW);
   // Read the signal from the sensor: a HIGH pulse whose
   // duration is the time (in microseconds) from the sending
   // of the ping to the reception of its echo off of an object.
   delayMicroseconds(5);
   duration = pulseIn(echopin, HIGH);
-  waterdistance= duration*0.034/2;
+  //https://lastminuteengineers.com/arduino-sr04-ultrasonic-sensor-tutorial/
+  waterdistance= (duration*0.034)/2;
   return waterdistance;
+}
+
+
+//adding average measurements to prevent strobing 
+//https://arobito-docs.readthedocs.io/en/latest/mcu/experiments/pages/hc-sr04_distance_measurement.html
+long avgcurrentdistance(){
+    long measureSum = 0;
+  for (int i = 0; i < MEASURE_SAMPLES; i++)
+  {
+    delay(MEASURE_SAMPLE_DELAY);
+    measureSum += currentdistance();
+  }
+  return measureSum / MEASURE_SAMPLES;
 }
 
 
 void loop() {
   delay(8000); //debug. allows serial monitor launching before things happen
   int i = 0;
-  wd = currentdistance();
+  wd = avgcurrentdistance();
   Serial.println("Initial distance is:" + String(wd));
   while ((wd > waterdistancetrigger) && (i < fscounter)) {
     //run the pump
@@ -65,7 +87,7 @@ void loop() {
       digitalWrite(relay, LOW);
     }
     delay (strobepausems);
-    wd = currentdistance();
+    wd = avgcurrentdistance();
     Serial.println("Decreased distance is:" + String(wd)); //debug
     Serial.println("Counter is:" + String(i) + "of" + String(fscounter)); //debug
     i++;

@@ -15,6 +15,7 @@ int waterdistancetrigger = 13;
 int strobepausems = 500; //.5 sec
 //waterpump should NEVER run more than this many seconds straight
 int failsafe = 30;
+//int failsafe = 22; //debug
 //how many cycles equal a sec
 const int strobepauses = round(1000/strobepausems);
 int fscounter = failsafe * strobepauses;
@@ -80,6 +81,7 @@ void loop() {
   int i = 0;
   wd = avgcurrentdistance();
   Serial.println("Initial distance is:" + String(wd));
+  if (wd >= waterdistancetrigger + 2){
   while ((wd > waterdistancetrigger) && (i < fscounter)) {
     //run the pump
     if(digitalRead(relay) == HIGH) {
@@ -91,6 +93,7 @@ void loop() {
     Serial.println("Decreased distance is:" + String(wd)); //debug
     Serial.println("Counter is:" + String(i) + "of" + String(fscounter)); //debug
     i++;
+  }
   }
 
   //if while reaches a false or was false from the start, having no work to do, always make sure pump is of.

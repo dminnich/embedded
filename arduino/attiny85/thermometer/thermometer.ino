@@ -8,7 +8,11 @@ BOOTLOADER, ETC:
 #https://www.arduinolibraries.info/libraries/ss_oled - screen 
 #https://github.com/bitbank2/BitBang_I2C - screen
 #https://github.com/RobTillaart/Arduino/tree/master/libraries/DHTlib - temp sensor
-#other notes: you may have to try to upload a few times and/or disconnect the temp sensor to upload.  cables fall off the screen and sensor easily.  
+#other notes to self: 
+ - new library folder with just this stuff or adafruit or other libs may conflict
+ - you may have to try to upload a few times and/or disconnect the temp sensor to upload.  
+ - cables fall off the screen, sensor and out of breadboard easily.  
+ - unhook 13-10 IVR programming pins from Uno when testing the attiny85 code
 
 Screen:
 SDA = 5/pb0
@@ -24,7 +28,7 @@ vcc = vcc
 
 ATTINY:
 1/pb5 = nothing
-2/pb3 = nothing 
+2/pb3 = nothing (led for testing)
 3/pb4 = nothing (serial recieve)
 4/gnd = gnd on devices and power supply
 
@@ -50,14 +54,19 @@ dht DHT;
 //vars
 const int checksec = 5; 
 int checkmsec = checksec * 1000;
+int led = 3;
 
 void setup() {
  // for debugging use CP210x UART hooked to device via RX and laptop via USB. Switch port in the IDE between IVR for programming and the CP210x for serial monitor.
- mySerial.begin(9600);  
- //setup the screen.  no idea what these do
+ mySerial.begin(9600);
+ //setup the screen.  resolution, ?, ?, pb0, pb2, ?
   int rc;
   rc = oledInit(OLED_128x32, 0, 0, 0xb0, 0xb2, 400000L); // for ATtiny85, use P0 as SDA and P2 as SCL
-
+ //simple light to show setup complete
+  pinMode(led, OUTPUT);
+  digitalWrite(led, HIGH);
+  delay(3000);
+  digitalWrite(led, LOW);
 }
 
 //convert C to F https://forum.arduino.cc/index.php?topic=557125.0
@@ -105,5 +114,9 @@ int chk = DHT.read11(DHT11_PIN);
   //row,col,char array of text, font, invert [1|0]
   oledWriteString(0,1,mytemp,FONT_LARGE,0);
   mySerial.println(f);
-  delay(checkmsec);                      
+  //quick blink to show the reading is done
+  delay(checkmsec);
+  digitalWrite(led, HIGH);
+  delay(300);
+  digitalWrite(led, LOW);
 }

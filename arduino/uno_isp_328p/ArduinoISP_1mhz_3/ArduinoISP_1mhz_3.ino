@@ -78,6 +78,7 @@ gnd = bridged across board
 gnd from gnd on cp202
 vcc from vcc on cp202
 1/22/reset = negative side of 10uf capacitor
+1/22* = 10k resistor to vcc
 2/0/RX = TX on cp202
 3/1/TX = RX on cp202
 7 = vcc

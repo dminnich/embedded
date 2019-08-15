@@ -88,13 +88,15 @@ int count = 0;
 #define  BUF_SIZE  25
 char curMessage[BUF_SIZE] = { "" }; //holding space
 //number of messages
-const int NUM_OF_ELEMENTS = 7;
+const int NUM_OF_ELEMENTS = 9;
 //array of messages
 char messages [NUM_OF_ELEMENTS] [BUF_SIZE] = {
   { "Whoop Whoop" }, 
   { "Fam-a-lee" },
   { "17" },
-  { "Best Sign" },
+  { "Brother" },
+  { "Zabba" },
+  { "K-C-MO" },
   { "More Butthole" },
   { "Fuck Off" },
   { "RIP Lahey" }
@@ -102,8 +104,8 @@ char messages [NUM_OF_ELEMENTS] [BUF_SIZE] = {
 
 
 void setup() {
-  delay(5000); //time to debug
-  Serial.begin(57600);
+ // delay(5000); //time to debug
+ // Serial.begin(57600);
   //button
   pinMode(BUTTON, INPUT_PULLUP);
   //screen
@@ -120,8 +122,8 @@ ButtonState = digitalRead(BUTTON);
     delay(500); //try and stop some bouncing
   }
   if (count < NUM_OF_ELEMENTS) {
-      Serial.println (count); //debug
-      Serial.println (messages [count]); //debug
+ //     Serial.println (count); //debug
+ //     Serial.println (messages [count]); //debug
       strcpy(curMessage, messages [count]);
     }
   else { //when NUM_OF_ELEMENTS +1 reset to zero and print 0 on next loop

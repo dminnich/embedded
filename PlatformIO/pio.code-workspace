@@ -1,0 +1,27 @@
+{
+	"folders": [
+		{
+			"path": "Projects/moisture_buzzer"
+		},
+		{
+			"name": "transistor",
+			"path": "Projects/transistor"
+		},
+		{
+			"path": "Projects/laser_break"
+		},
+		{
+			"name": "clock",
+			"path": "Projects/clock"
+		},
+		{
+			"path": "Projects/snake"
+		}
+	],
+	"settings": {
+		"terminal.integrated.env.linux": {
+			"PATH": "/home/sancho/.platformio/penv/bin:/home/sancho/.platformio/penv:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+			"PLATFORMIO_CALLER": "vscode"
+		}
+	}
+}

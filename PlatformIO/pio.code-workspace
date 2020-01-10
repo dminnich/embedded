@@ -16,6 +16,14 @@
 		},
 		{
 			"path": "Projects/snake"
+		},
+		{
+			"name": "plant_waterer",
+			"path": "Projects/plant_waterer"
+		},
+		{
+			"name": "nanotestground",
+			"path": "Projects/nanotestground"
 		}
 	],
 	"settings": {

@@ -22,8 +22,8 @@
 			"path": "Projects/plant_waterer"
 		},
 		{
-			"name": "nanotestground",
-			"path": "Projects/nanotestground"
+			"name": "blink_pcb",
+			"path": "Projects/blink_pcb"
 		}
 	],
 	"settings": {

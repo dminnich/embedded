@@ -110,9 +110,9 @@ void setup() {
   Serial.begin(9600);
   // The following lines can be uncommented to set the date and time
   //Uncomment. Upload.  Comment. Upload.
-  //rtc.setDOW(SUNDAY);     // Set Day-of-Week to SUNDAY
-  //rtc.setTime(13, 05, 00);     // Set the time to 12:00:00 (24hr format)
-  //rtc.setDate(03, 11, 2019);   // dom, month, year
+  //rtc.setDOW(TUESDAY);     // Set Day-of-Week to SUNDAY
+  //rtc.setTime(07, 14, 55);     // Set the time to 12:00:00 (24hr format)
+  //rtc.setDate(17, 03, 2020);   // dom, month, year
 }
 
 void dim(){

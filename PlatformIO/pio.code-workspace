@@ -24,6 +24,10 @@
 		{
 			"name": "blink_pcb",
 			"path": "Projects/blink_pcb"
+		},
+		{
+			"name": "dice",
+			"path": "Projects/dice"
 		}
 	],
 	"settings": {

@@ -4,10 +4,6 @@
 			"path": "Projects/moisture_buzzer"
 		},
 		{
-			"name": "transistor",
-			"path": "Projects/transistor"
-		},
-		{
 			"path": "Projects/laser_break"
 		},
 		{
@@ -28,6 +24,10 @@
 		{
 			"name": "dice",
 			"path": "Projects/dice"
+		},
+		{
+			"name": "snake_v2",
+			"path": "Projects/snake_v2"
 		}
 	],
 	"settings": {

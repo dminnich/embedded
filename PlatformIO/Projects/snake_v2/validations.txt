@@ -1,0 +1,40 @@
+Validations:
+
+Relay times--
+const uint8_t growonh = 10;
+const uint8_t growoffh = 13;
+- One before start.  
+- One on start
+- One during time
+- One on off hour
+- One after off hour
+9 = off - no GL - GOOD
+10 = on - GL - GOOD
+12 =on  - GL -  GOOD
+13 = off - no GL - GOOD
+14 = off  - no GL - GOOD
+GL means relay is on as well
+
+const uint8_t offtemp = 10;
+- One below temp 
+- One at temp
+- One above temp
+9 = on - HL - GOOD
+10 = off - no HL - GOOD
+11 = off - no HL - GOOD
+HL means relay is on as well
+
+
+Roughly int relaypauses = 5 time between Serial Relay prints - GOOD
+
+US and World time - GOOD
+
+F and C temp - GOOD
+
+Debug level NTP to make sure it only requests it const uint16_t ntppollsec = 21600; and that caching is working - GOOD
+
+make sure its roughly  const uint8_t looppauses = 1; between loop executions - GOOD
+
+
+temps are correct.  - GOOD
+time is correct. - GOOD

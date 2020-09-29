@@ -85,16 +85,16 @@ int myhour, mymin, mytemp;
 
 //config
 //how many seconds to wait between main loop executions.  temp sensors may struggle to be read more frequently than every 250ms. 
-const uint8_t looppauses = 1;
+const uint8_t looppauses = 3;
 //how often in seconds are we willing to toggle the relays?  you don't want to strobe them.  5 minutes here
 int relaypauses = 300;
 //grow light runs roughly between the hours specified below.  Can be + or - relaypauses
 //grow light on hour in 24h format.
-const uint8_t growonh = 10;
+const uint8_t growonh = 8;
 //grow light off hour in 24h format.
-const uint8_t growoffh = 13;
+const uint8_t growoffh = 23;
 //heat lamp runs roughly at any temperature below offtemp.  Can be up to relaypauses before an adjustment happens
-const uint8_t offtemp = 85;
+const uint8_t offtemp = 86;
 //time display format us (12 hour) or world (24 hour)
 const String timeformat = "us";
 //temp display format F (fahrenheit) or C (celsius)
@@ -106,7 +106,7 @@ const String ntpserver = "192.168.2.1";
 //how frequently to ask the NTP servers for the time. 
 //nodemcu keeps good time so every 6 hours is good enough. don't hammer public servers
 const uint16_t ntppollsec = 21600;
-//put your wifi credentials in another file in lib and .gitignore it
+//put your wifi credentials in another file in include and .gitignore it
 //format of
 //#define WIFI_SSID "myssid"
 //#define WIFI_PASSWD "mypass"
@@ -114,7 +114,7 @@ const uint16_t ntppollsec = 21600;
 char ssid[] = WIFI_SSID;
 char password[] = WIFI_PASSWD;
 //enable debug settings and output
-const bool debug = true;
+const bool debug = false;
 
 //temp sensors "DHT sensor library" 
 //https://github.com/adafruit/DHT-sensor-library/blob/master/examples/DHTtester/DHTtester.ino
@@ -157,11 +157,11 @@ void setup() {
   if (debug){
     Serial.begin(9600);
   }
-  //relays are outputs the ones I have are active HIGH.  Make sure they are turned off at boot.
+  //relays are outputs the ones I built are active LOW.  Make sure they are turned off at boot.
   pinMode(r1, OUTPUT);
   pinMode(r2, OUTPUT);
-  digitalWrite(r1, LOW);
-  digitalWrite(r2, LOW);
+  digitalWrite(r1, HIGH);
+  digitalWrite(r2, HIGH);
 
   //temp sensors
   coldts.begin();
@@ -186,7 +186,6 @@ void setup() {
 }
 
 void getTime() {
-
   //call the eztime events method that notices if it needs to resync the time or not
   events();
   //create a time object
@@ -249,38 +248,38 @@ void adjustRelays() {
   //overide hour and temp for debugging
   if (debug){
     Serial.println("RLEAY");
-    myhour = 14;
-    mytemp = 9;
+    //myhour = 14;
+    //mytemp = 9;
    }
 
   //reset status each time we enter the loop
   relayline = "";
   //make sure the grow light is on during our specified times
   if (myhour >= growonh && myhour < growoffh) { 
-    if (digitalRead(r1) == LOW) {
-      digitalWrite(r1, HIGH); 
+    if (digitalRead(r1) == HIGH) {
+      digitalWrite(r1, LOW); 
     }
     //add GL to our output line to signify the grow light is on
     relayline = String(relayline + "GL ");
   }
   //ensure grow light is off during non-specified hours
   else {
-    if (digitalRead(r1) == HIGH) {
-      digitalWrite(r1, LOW); 
+    if (digitalRead(r1) == LOW) {
+      digitalWrite(r1, HIGH); 
     }
   }
   //make sure the heat lamp is on if hot side is cooler than our specified temp
   if (mytemp < offtemp) {
-    if (digitalRead(r2) == LOW) {
-      digitalWrite(r2, HIGH);
+    if (digitalRead(r2) == HIGH) {
+      digitalWrite(r2, LOW);
     }
     //add HL to our relay status line
     relayline = String(relayline + "HL ");
   }
   //ensure heat lamp is off if hot side is hotter than our specified temp
   else {
-    if (digitalRead(r2) == HIGH) {
-      digitalWrite(r2, LOW);
+    if (digitalRead(r2) == LOW) {
+      digitalWrite(r2, HIGH);
     }
   }
 }
@@ -324,5 +323,5 @@ void loop() {
   //write the data to the OLED screen
   adjustScreen();
   //pause a bit to prevent sensor and screen strobing
-  relayadjust.delay(looppauses);
+  delay(looppauses * 1000);
 }

@@ -28,6 +28,18 @@
 		{
 			"name": "snake_v2",
 			"path": "Projects/snake_v2"
+		},
+		{
+			"name": "bluepill_test",
+			"path": "Projects/bluepill_test"
+		},
+		{
+			"name": "digistump_test",
+			"path": "Projects/digistump_test"
+		},
+		{
+			"name": "stm8_test",
+			"path": "Projects/stm8_test"
 		}
 	],
 	"settings": {

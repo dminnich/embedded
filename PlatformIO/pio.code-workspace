@@ -40,6 +40,10 @@
 		{
 			"name": "stm8_test",
 			"path": "Projects/stm8_test"
+		},
+		{
+			"name": "distance",
+			"path": "Projects/distance"
 		}
 	],
 	"settings": {

@@ -1,7 +1,7 @@
 //main.C NOT main.CPP
 //http://www.helton.de/post/development-boards-pinout/
 #include <Arduino.h>
-const uint8_t led = PC3;
+const uint8_t led = PD3;
 
 void setup() {
   pinMode(led, OUTPUT);

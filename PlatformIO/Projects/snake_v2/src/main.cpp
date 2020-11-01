@@ -92,7 +92,7 @@ int relaypauses = 300;
 //grow light on hour in 24h format.
 const uint8_t growonh = 8;
 //grow light off hour in 24h format.
-const uint8_t growoffh = 23;
+const uint8_t growoffh = 21;
 //heat lamp runs roughly at any temperature below offtemp.  Can be up to relaypauses before an adjustment happens
 const uint8_t offtemp = 86;
 //time display format us (12 hour) or world (24 hour)
